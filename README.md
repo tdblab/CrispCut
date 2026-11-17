@@ -1,5 +1,8 @@
 # NeoGuide
 
+<img width="1208" height="324" alt="neoguide_rnp_arrow_lockups - Copy" src="https://github.com/user-attachments/assets/a5d77634-9d67-403e-bc27-5470bcbe666b" />
+
+
 Precomputed, off-target-verified SpCas9 guides for every protein-coding gene of
 a genome, each one paired with primers for amplicon sequencing. Built for
 non-model organisms, where no such resource exists. NeoGuide is the
