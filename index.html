@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NeoGuide — CRISPR guides for Bicyclus anynana</title>
+<meta name="description" content="NeoGuide: precomputed, off-target-verified SpCas9 guides for every coding gene of a genome, with amplicon-sequencing primers.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/app.css">
+<link rel="icon" href="assets/mark.svg">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="bar">
+  <a class="brand" href="#/" aria-label="NeoGuide home">
+    <svg class="mark" viewBox="0 0 24 24" aria-hidden="true">
+      <circle cx="12" cy="12" r="10.5" class="r1"/>
+      <circle cx="12" cy="12" r="7" class="r2"/>
+      <circle cx="12" cy="12" r="3.4" class="r3"/>
+      <circle cx="12" cy="12" r="1.3" class="r4"/>
+    </svg>
+    <span class="brandtext">NeoGuide<em id="brandsp">Bicyclus anynana</em></span>
+  </a>
+  <div class="barsearch" id="barsearch">
+    <input id="q" type="search" autocomplete="off" spellcheck="false"
+           placeholder="Gene, LOC number, fly symbol, or sequence"
+           aria-label="Search genes">
+    <div id="sug" class="sug" role="listbox" hidden></div>
+  </div>
+  <nav class="barnav">
+    <a href="#/methods">Methods</a>
+    <button id="theme" type="button" aria-label="Switch colour theme">
+      <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 2.6a7.4 7.4 0 1 0 7.4 7.4A5.8 5.8 0 0 1 10 2.6Z"/></svg>
+    </button>
+  </nav>
+</header>
+
+<main id="main"></main>
+
+<footer class="foot">
+  <p>Guides and primers are computational predictions. Verify every oligo against
+     your own sequence before ordering, and confirm edits by sequencing.</p>
+  <p class="footmeta" id="footmeta"></p>
+</footer>
+
+<template id="t-home">
+  <section class="hero">
+    <h1>Every coding gene. Every guide. Already scored.</h1>
+    <p class="lede">SpCas9 guides in the coding sequence of all
+      <b data-n="genes"></b> protein-coding genes of <i>Bicyclus anynana</i>,
+      each one scanned against the whole 457 Mb assembly for off-targets and
+      paired with primers for amplicon sequencing.</p>
+    <div class="herosearch">
+      <input id="q2" type="search" autocomplete="off" spellcheck="false"
+             placeholder="Try optix, wnt1, LOC112048811, or paste a sequence"
+             aria-label="Search genes">
+      <div id="sug2" class="sug" role="listbox" hidden></div>
+    </div>
+    <p class="examples">Jump to
+      <span id="examples"></span>
+    </p>
+  </section>
+
+  <section class="stats">
+    <div><b data-n="guides"></b><span>guides published</span></div>
+    <div><b data-n="scanned"></b><span>guides off-target scanned</span></div>
+    <div><b>4</b><span>mismatch search depth, NGG + NAG</span></div>
+    <div><b>≤300 bp</b><span>amplicons for genotyping</span></div>
+  </section>
+
+  <section class="legendbox">
+    <h2>How to read a guide</h2>
+    <div class="legendgrid">
+      <div>
+        <div class="ringrow">
+          <span class="ring t3"></span><span class="ring t2"></span>
+          <span class="ring t1"></span><span class="ring t0"></span>
+        </div>
+        <h3>The ring is the verdict</h3>
+        <p>Dark green guides have no off-target site anywhere in the genome
+          within two mismatches. Red means a close match exists elsewhere —
+          usable, but genotype carefully.</p>
+      </div>
+      <div>
+        <p class="mono big">0 · 0 · 1 · 14 · 212</p>
+        <h3>Off-target counts, not a black box</h3>
+        <p>Sites in the genome matching the spacer with 0, 1, 2, 3 and 4
+          mismatches next to an NGG PAM. These are exhaustive counts from a
+          full scan, not estimates.</p>
+      </div>
+      <div>
+        <p class="mono big">F&nbsp;→&nbsp;<span class="cut">✂</span>&nbsp;←&nbsp;R</p>
+        <h3>Primers that already work</h3>
+        <p>Each guide ships with a primer pair whose product is under 300 bp and
+          puts the cut site at least 50 bp from both ends, ready for
+          amplicon sequencing.</p>
+      </div>
+    </div>
+  </section>
+</template>
+
+<script src="assets/app.js"></script>
+</body>
+</html>

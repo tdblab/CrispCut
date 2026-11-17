@@ -1,0 +1,23 @@
+{
+ "species": "Bicyclus anynana",
+ "common": "squinting bush brown",
+ "assembly": "ilBicAnyn1.1 (GCF_947172395.1)",
+ "annotation": "NCBI RefSeq, iBany1.1",
+ "n_genes": 13577,
+ "n_guides_published": 135723,
+ "n_scanned": 528697,
+ "top_n": 10,
+ "more_n": 20,
+ "nuclease": "SpCas9, 20 nt spacer, NGG PAM",
+ "ot_search": "complete to 4 mismatches, NGG and NAG PAMs, both strands, whole assembly (457.2 Mb)",
+ "weights": {
+  "mm": [
+   20,
+   4,
+   0.6,
+   0.08,
+   0.004
+  ],
+  "nag": 0.1
+ }
+}
