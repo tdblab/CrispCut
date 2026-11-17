@@ -1079,11 +1079,11 @@ function renderMethods() {
         ends in NGG is a candidate, on both strands. Guides are never allowed to
         run across a splice junction, because the genomic target would then
         contain intron sequence.</p>
-      <p>Candidates are ranked on sequence features alone — GC content, poly-T
-        tracts that terminate Pol III transcription, homopolymers, internal
-        self-complementarity, position along the coding sequence, distance from
-        the exon edge, and whether the cut falls in coding sequence shared by
-        every annotated isoform. The best of each tenth of the CDS go forward, so
+      <p>Candidates are ranked on sequence features alone. Those features are
+        GC content, poly-T tracts that terminate Pol III transcription,
+        homopolymers, internal self-complementarity, position along the coding
+        sequence, distance from the exon edge, and whether the cut falls in
+        coding sequence shared by every annotated isoform. The best of each tenth of the CDS go forward, so
         the scan covers the whole gene rather than clustering at one end.</p>
 
       <h2>The off-target scan</h2>
@@ -1108,8 +1108,8 @@ function renderMethods() {
       <p>The weights are set so that the unavoidable four-mismatch background of a
         457 Mb genome costs a few points while a single close site dominates. A
         typical clean guide lands near 78. These values are not comparable with
-        the MIT or CFD scores printed by other tools — use the raw mismatch counts
-        when you want to compare across software.</p>
+        the MIT or CFD scores printed by other tools, so use the raw mismatch
+        counts when you want to compare across software.</p>
       <p>The ring colour combines that specificity with the sequence score, then
         caps the result whenever a perfect or single-mismatch site exists
         elsewhere. Treat the ring as triage and read the counts before you order.</p>
