@@ -16,7 +16,7 @@ GTF; nothing in the site code is specific to *Bicyclus*. The species name shown
 in the header comes from `data/meta.json`.
 
 The site is **entirely static**. There is no server, no database and no API
-call — every page is HTML plus JSON fetched from `data/`. It will run from
+call - every page is HTML plus JSON fetched from `data/`. It will run from
 GitHub Pages, Cloudflare Pages, an S3 bucket, or a USB stick.
 
 ## What is in here
