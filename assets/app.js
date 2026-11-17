@@ -1,4 +1,4 @@
-/* NeoGuide — client application.
+/* NeoGuide client application.
    Static site: one search index + one JSON file per gene. */
 (() => {
 "use strict";
@@ -113,7 +113,7 @@ function dataError(e) {
       <b>On macOS or Linux:</b> run <code>./start.sh</code> in this folder.<br>
       Either one opens it at <code>http://localhost:8765</code>. Nothing is
       uploaded anywhere.</p>
-      <p class="nores">Once it is on GitHub Pages this does not apply — served
+      <p class="nores">Once it is on GitHub Pages this does not apply. Served
       over http, it just works.</p>`
     : `<p class="nores">The page loaded but its data files did not. That is a
       hosting or network problem, not a problem with what you searched for.</p>`}
@@ -768,7 +768,7 @@ function guideDetail(gd, i, gene) {
           <h4>Plasmid cloning, BbsI</h4>
           <p>Anneal these and ligate into a BbsI-cut U6 vector such as pX330,
             where Cas9 and the scaffold are already encoded. Only for plasmid
-            workflows — check the overhangs match your backbone.</p>
+            workflows, so check the overhangs match your backbone.</p>
           <div class="prim">
             <div class="primrow"><span class="tag">top</span>
               <span class="pseq">${esc(ol.top)}</span>

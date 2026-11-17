@@ -1,18 +1,19 @@
-/* Guide atlas — Bicyclus anynana
+/* NeoGuide, Bicyclus anynana
    Palette taken from the ventral wing of the animal: paper, warm ink, and the
    gold ring of the eyespot. Quality tiers keep conventional green-to-red
    semantics but in the earth tones of the wing. */
 
 :root{
-  --paper:#FBFAF7;
+  --paper:#F3F9FA;
   --surface:#FFFFFF;
-  --surface2:#F5F2EC;
-  --ink:#1A1510;
-  --ink2:#5A5047;
-  --ink3:#867A6D;
-  --rule:#E3DED4;
-  --rule2:#D2CABC;
+  --surface2:#E9F2F4;
+  --ink:#15191B;
+  --ink2:#4C585C;
+  --ink3:#626E72;
+  --rule:#DCE8EA;
+  --rule2:#C3D3D7;
   --gold:#C8871B;
+  --gold-ink:#9A6510;
   --gold-soft:#F6E9CF;
   --t3:#1F6F4A;
   --t2:#6E9A3E;
@@ -29,15 +30,16 @@
   --maxw:1180px;
 }
 [data-theme="dark"]{
-  --paper:#14110E;
-  --surface:#1C1815;
-  --surface2:#241F1A;
-  --ink:#F2EDE5;
-  --ink2:#BDB2A5;
-  --ink3:#8C8175;
-  --rule:#312A24;
-  --rule2:#443B33;
+  --paper:#0E1416;
+  --surface:#151C1E;
+  --surface2:#1C2528;
+  --ink:#EAF1F2;
+  --ink2:#AEBBBF;
+  --ink3:#7E8C90;
+  --rule:#273134;
+  --rule2:#384447;
   --gold:#E0A33C;
+  --gold-ink:#E0A33C;
   --gold-soft:#3A2D16;
   --t3:#4FB885;
   --t2:#9DC866;
@@ -181,7 +183,7 @@ main{max-width:var(--maxw);margin:0 auto;padding:0 24px 72px}
   white-space:nowrap;
 }
 .badge.hi{background:var(--t3-soft);color:var(--t3);border-color:transparent;font-weight:600}
-.badge.med{background:var(--t1-soft);color:var(--t1);border-color:transparent;font-weight:600}
+.badge.med{background:var(--t1-soft);color:var(--gold-ink);border-color:transparent;font-weight:600}
 .badge.lo{background:var(--t0-soft);color:var(--t0);border-color:transparent;font-weight:600}
 .badge.mono{font-family:var(--mono);font-size:12.8px}
 .badge a{text-decoration:none;border-bottom:1px solid currentColor}
@@ -246,7 +248,7 @@ main{max-width:var(--maxw);margin:0 auto;padding:0 24px 72px}
 .grow:hover{background:var(--surface2)}
 .grank{display:flex;align-items:center;justify-content:center}
 .gseq{font-family:var(--mono);font-size:16px;font-weight:500;letter-spacing:.035em;white-space:nowrap}
-.gseq .pam{color:var(--gold);font-weight:600}
+.gseq .pam{color:var(--gold-ink);font-weight:600}
 .gseq .st{color:var(--ink3);font-size:13.5px;margin-left:8px;letter-spacing:0;font-family:var(--sans)}
 .gmeta{display:flex;gap:16px;align-items:baseline;min-width:0;flex-wrap:wrap}
 .kv{display:flex;flex-direction:column;line-height:1.15}
@@ -256,7 +258,7 @@ main{max-width:var(--maxw);margin:0 auto;padding:0 24px 72px}
 .flags{display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end}
 .flag{font-size:12px;font-weight:600;padding:3px 7px;border-radius:6px;
   background:var(--surface2);color:var(--ink2);white-space:nowrap}
-.flag.warn{background:var(--t1-soft);color:var(--t1)}
+.flag.warn{background:var(--t1-soft);color:var(--gold-ink)}
 .flag.bad{background:var(--t0-soft);color:var(--t0)}
 .flag.good{background:var(--t3-soft);color:var(--t3)}
 .chev{width:16px;height:16px;fill:var(--ink3);transition:transform .18s ease}
@@ -270,7 +272,7 @@ main{max-width:var(--maxw);margin:0 auto;padding:0 24px 72px}
 .seqline{font-family:var(--mono);font-size:15px;letter-spacing:.04em;
   word-break:break-all;line-height:1.75}
 .seqline .sp{background:var(--t3-soft);border-radius:3px;padding:2px 0}
-.seqline .pamx{background:var(--gold-soft);color:var(--gold);font-weight:600;border-radius:3px;padding:2px 0}
+.seqline .pamx{background:var(--gold-soft);color:var(--gold-ink);font-weight:600;border-radius:3px;padding:2px 0}
 .seqline .fl{color:var(--ink3)}
 .cutmark{color:var(--t0);font-weight:700}
 
@@ -434,7 +436,7 @@ table.ot tr:last-child td{border-bottom:0}
 .ampseq .as.t2{background:var(--t2-soft);box-shadow:inset 0 -2px 0 var(--t2)}
 .ampseq .as.t1{background:var(--t1-soft);box-shadow:inset 0 -2px 0 var(--t1)}
 .ampseq .as.t0{background:var(--t0-soft);box-shadow:inset 0 -2px 0 var(--t0)}
-.ampseq .am{background:var(--gold-soft);color:var(--gold);font-weight:700;border-radius:2px}
+.ampseq .am{background:var(--gold-soft);color:var(--gold-ink);font-weight:700;border-radius:2px}
 .ampseq .acut,.amplegend .acut{color:var(--t0);font-weight:700}
 .amplegend{display:flex;gap:14px;flex-wrap:wrap;align-items:center;margin:9px 0 0;
   font-size:12.5px;color:var(--ink3)}
