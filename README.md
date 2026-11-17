@@ -35,7 +35,7 @@ data/guides_top.tsv     every published guide as one plain table
 
 ## Running it locally
 
-**Open `index.html`.** That is all — no server, no Python, no terminal. It
+**Open `index.html`.** That is all - no server, no Python, no terminal. It
 works from a folder, from a USB stick, and with no network at all.
 
 This works because every data file is a classic script rather than JSON fetched
