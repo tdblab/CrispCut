@@ -51,6 +51,37 @@ typedef struct {
 
 static inline int popc64(uint64_t x) { return __builtin_popcountll(x); }
 
+/* Ranking of a stored off-target: fewest mismatches first, then NGG ahead of
+   NAG (NAG is cleaved far less efficiently, so an NGG site always matters
+   more), then fewest seed mismatches. Lower is more concerning. */
+static inline int hitkey(int mm, int pam, int sd) {
+    return mm * 1000 + pam * 100 + sd;
+}
+
+/* Keep the best MAXHIT hits per query. Appending the first ones encountered
+   would let a run of weak NAG sites crowd out the NGG sites that matter. */
+static inline void keep_hit(Hit *base, uint8_t *n, int32_t pos, uint8_t ci,
+                            uint8_t strand, int mm, int sd, int pam) {
+    int k = hitkey(mm, pam, sd);
+    int slot = -1;
+    if (*n < MAXHIT) {
+        slot = (*n)++;
+    } else {
+        int worst = k;
+        for (int z = 0; z < MAXHIT; z++) {
+            int zk = hitkey(base[z].mm, base[z].pam, base[z].seedmm);
+            if (zk > worst) { worst = zk; slot = z; }
+        }
+        if (slot < 0) return;
+    }
+    base[slot].pos = pos;
+    base[slot].chrom = ci;
+    base[slot].strand = strand;
+    base[slot].mm = (uint8_t)mm;
+    base[slot].seedmm = (uint8_t)sd;
+    base[slot].pam = (uint8_t)pam;
+}
+
 static inline int mmcount(uint64_t x) {
     uint64_t m = (x | (x >> 1)) & 0x5555555555555555ull;
     return popc64(m);
@@ -246,12 +277,9 @@ int main(int argc, char **argv) {
                                     if (mm == 0 && pam == 0 && qstrand[q] == 0 &&
                                         qchrom[q] == (uint8_t)ci && qpos[q] == gpos) continue;
                                     myc[(size_t)q * nmmslot + pam * (MAXMM + 1) + mm]++;
-                                    if (mynh[q] < MAXHIT) {
-                                        Hit *h = &myh[(size_t)q * MAXHIT + mynh[q]++];
-                                        h->pos = gpos; h->chrom = (uint8_t)ci; h->strand = 0;
-                                        h->mm = (uint8_t)mm; h->seedmm = (uint8_t)seedmmcount(x);
-                                        h->pam = (uint8_t)pam;
-                                    }
+                                    keep_hit(&myh[(size_t)q * MAXHIT], &mynh[q],
+                                             gpos, (uint8_t)ci, 0, mm,
+                                             seedmmcount(x), pam);
                                 }
                             }
                         }
@@ -289,12 +317,9 @@ int main(int argc, char **argv) {
                                     if (mm == 0 && pam == 0 && qstrand[q] == 1 &&
                                         qchrom[q] == (uint8_t)ci && qpos[q] == gpos) continue;
                                     myc[(size_t)q * nmmslot + pam * (MAXMM + 1) + mm]++;
-                                    if (mynh[q] < MAXHIT) {
-                                        Hit *h = &myh[(size_t)q * MAXHIT + mynh[q]++];
-                                        h->pos = gpos; h->chrom = (uint8_t)ci; h->strand = 1;
-                                        h->mm = (uint8_t)mm; h->seedmm = (uint8_t)seedmmcount(x);
-                                        h->pam = (uint8_t)pam;
-                                    }
+                                    keep_hit(&myh[(size_t)q * MAXHIT], &mynh[q],
+                                             gpos, (uint8_t)ci, 1, mm,
+                                             seedmmcount(x), pam);
                                 }
                             }
                         }
@@ -323,8 +348,8 @@ int main(int argc, char **argv) {
                 tmp[n++] = thits[t][(size_t)q * MAXHIT + j];
         for (int a = 0; a < n; a++)
             for (int b = a + 1; b < n; b++) {
-                int ka = tmp[a].mm * 100 + tmp[a].seedmm * 10 + tmp[a].pam;
-                int kb = tmp[b].mm * 100 + tmp[b].seedmm * 10 + tmp[b].pam;
+                int ka = hitkey(tmp[a].mm, tmp[a].pam, tmp[a].seedmm);
+                int kb = hitkey(tmp[b].mm, tmp[b].pam, tmp[b].seedmm);
                 if (kb < ka) { Hit s = tmp[a]; tmp[a] = tmp[b]; tmp[b] = s; }
             }
         int keep = n < MAXHIT ? n : MAXHIT;

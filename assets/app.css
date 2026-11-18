@@ -449,3 +449,31 @@ table.ot tr:last-child td{border-bottom:0}
 .amplegend .k.as.t0{background:var(--t0-soft);box-shadow:inset 0 -2px 0 var(--t0)}
 .amplegend .k.am{background:var(--gold-soft);box-shadow:inset 0 -2px 0 var(--gold)}
 .amplegend .k.ai{background:transparent;box-shadow:inset 0 0 0 1px var(--rule2)}
+
+/* ---------- manual ---------- */
+.manual{max-width:72ch}
+.lede2{font-size:18px;color:var(--ink2);line-height:1.6;margin:10px 0 26px;max-width:62ch}
+.toc{
+  display:flex;flex-wrap:wrap;gap:7px;margin:0 0 34px;padding:16px 18px;
+  background:var(--surface2);border:1px solid var(--rule);border-radius:12px;
+}
+.toc button{
+  border:1px solid var(--rule2);background:var(--surface);border-radius:999px;
+  padding:5px 12px;font-size:14px;font-weight:500;color:var(--ink2);cursor:pointer;
+}
+.toc button:hover{border-color:var(--ink3);color:var(--ink)}
+.manual h2{scroll-margin-top:80px;padding-top:6px}
+.manual h3{font-size:17px;margin:22px 0 6px;color:var(--ink)}
+.manual table td:first-child{
+  font-family:var(--sans);font-size:15.5px;color:var(--ink);font-weight:500;
+  white-space:nowrap;vertical-align:top;padding-right:18px;
+}
+.manual table td:last-child{font-family:var(--sans)}
+.manual table td{vertical-align:top}
+.endnote{
+  margin-top:36px;padding-top:20px;border-top:1px solid var(--rule);
+  font-size:15.5px;color:var(--ink3);
+}
+@media (max-width:620px){
+  .manual table td:first-child{white-space:normal}
+}

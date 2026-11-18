@@ -338,9 +338,14 @@ async function renderSeqSearch(qraw) {
       need.get(shard).push([h, i]);
       if (need.size > 24) break;
     }
-    for (const [shard, list] of need) {
-      const arr = await loadShard(shard);
+    // fetch every shard this query touches at once; serially they would be up
+    // to two dozen round trips before the first result appears
+    const nums = Array.from(need.keys());
+    const arrs = await Promise.all(nums.map((n) => loadShard(n)));
+    for (let ni = 0; ni < nums.length; ni++) {
+      const arr = arrs[ni];
       if (!arr) continue;
+      const list = need.get(nums[ni]);
       for (const [h, qoff] of list) {
         let lo = 0, hi = arr.length / 2 - 1, at = -1;
         while (lo <= hi) {
@@ -1054,6 +1059,280 @@ document.addEventListener("click", (e) => {
   });
 });
 
+
+/* ---------------------------------------------------------------- manual */
+function renderManual() {
+  const sections = [
+    ["what", "What NeoGuide is"],
+    ["find", "Finding your gene"],
+    ["page", "The gene page"],
+    ["map", "The picture at the top"],
+    ["list", "The list of guides"],
+    ["ring", "What the coloured dot means"],
+    ["numbers", "The five off-target numbers"],
+    ["inside", "Opening a guide"],
+    ["seq", "The sequence at the bottom"],
+    ["get", "Filters and downloads"],
+    ["pick", "How to pick a guide"],
+    ["cannot", "What NeoGuide cannot tell you"],
+    ["words", "Words you will see"],
+  ];
+  $("#main").innerHTML = `
+  <article class="doc manual">
+    <h1>How to use NeoGuide</h1>
+    <p class="lede2">Everything on this site in plain language. If you have never
+      designed a CRISPR experiment before, start at the top. If you just want to
+      know what one number means, jump to it.</p>
+
+    <nav class="toc">${sections.map((x) =>
+      `<button type="button" data-goto="m-${x[0]}">${esc(x[1])}</button>`).join("")}</nav>
+
+    <h2 id="m-what">What NeoGuide is</h2>
+    <p>To knock out a gene with CRISPR you need three things. A short piece of
+      RNA, called a guide, that matches a 20 letter stretch of your gene and
+      tells the Cas9 protein where to cut. Proof that those 20 letters do not
+      also match somewhere else in the genome, because Cas9 would cut there too.
+      And a pair of PCR primers so you can check afterwards whether the edit
+      actually happened.</p>
+    <p>NeoGuide has done all three for every protein-coding gene in
+      <i>Bicyclus anynana</i>. You look up your gene and copy what you need.
+      There is nothing to install and nothing to run.</p>
+
+    <h2 id="m-find">Finding your gene</h2>
+    <p>There is one search box at the top of every page, and it accepts three
+      different things.</p>
+    <p><b>A gene name.</b> Names here follow the <i>Drosophila</i> convention, so
+      type <code>optix</code>, <code>wg</code>, <code>Dll</code>,
+      <code>hh</code>. Part of a name works too, and so does part of the longer
+      protein description if the short name escapes you.</p>
+    <p><b>A LOC number.</b> Paste it straight from the NCBI annotation, for
+      example <code>LOC112048811</code>. Both the current and the older
+      assembly numbering are recognised.</p>
+    <p><b>A piece of sequence.</b> Paste at least 31 letters of coding sequence
+      and press Enter. NeoGuide works out which gene it came from and where in
+      that gene it sits, then highlights it for you. This is the one to use when
+      you have a fragment from sequencing, or you want to cut inside one
+      particular domain. It searches coding sequence only, so a piece of an
+      intron or an untranslated region will not be found.</p>
+
+    <h2 id="m-page">The gene page</h2>
+    <p>The top of the page identifies the gene. The large name is the short name,
+      the line under it is the full protein description, and the small labels
+      below give the LOC number, the matching fruit fly gene and how confident
+      that match is, a link to FlyBase, the length of the coding sequence, how
+      many coding exons it has, and how many different versions of the gene
+      (isoforms) are annotated.</p>
+    <p>The confidence label on the fly gene is worth a glance. <b>High</b> means
+      the two genes are each other's best match in both directions, which is the
+      strongest evidence of a true equivalent. <b>Low</b> means the name comes
+      from family resemblance rather than a clean one-to-one match, so treat the
+      name as a hint and not a fact.</p>
+
+    <h2 id="m-map">The picture at the top</h2>
+    <p>The grey blocks are the coding exons of the gene, laid end to end in
+      reading order with the start of the protein on the left. Introns are not
+      drawn, because guides are never placed in them.</p>
+    <p>Each small circle above the blocks is one guide, sitting at the position
+      where it cuts. The colour tells you how clean that guide is, using the
+      same scale as the list below. Hover over a circle to see the sequence, or
+      click it to open that guide and highlight it everywhere else on the page.</p>
+
+    <h2 id="m-list">The list of guides</h2>
+    <p>Each row is one guide, and the ten shown are the best ten for that gene.
+      Reading a row from left to right: the coloured dot is the overall verdict;
+      the letters are the 20 letter spacer you would order, with the three letter
+      PAM after it in gold; then whether the guide reads along the gene (sense)
+      or against it (antisense), which does not affect how well it works; how
+      far into the coding sequence it cuts, as a percentage; which exon it falls
+      in; a specificity score; and the five off-target numbers.</p>
+    <p>The first row is labelled as the best available guide for that gene. That
+      label means two specific things, both of which are checked: it is in the
+      cleanest group available for this gene, and it has a working primer pair.
+      It does not mean the guide is guaranteed to cut well. Nothing on this site
+      can promise that.</p>
+
+    <h2 id="m-ring">What the coloured dot means</h2>
+    <p>The dot is a quick verdict, meant for triage rather than for the final
+      decision. Read the numbers before you order.</p>
+    <table>
+      <tr><td><span class="ring sm t3"></span></td><td><b>Dark green.</b> No other
+        place in the genome comes within two letters of matching this guide.</td></tr>
+      <tr><td><span class="ring sm t2"></span></td><td><b>Light green.</b> Nothing
+        within one letter, but something within two. Usually still fine.</td></tr>
+      <tr><td><span class="ring sm t1"></span></td><td><b>Amber.</b> No exact
+        duplicate, but close enough matches exist that you should look at them.</td></tr>
+      <tr><td><span class="ring sm t0"></span></td><td><b>Red.</b> The same
+        sequence, or something one letter away from it, exists somewhere else in
+        the genome. Cas9 will probably cut there as well.</td></tr>
+    </table>
+
+    <h2 id="m-numbers">The five off-target numbers</h2>
+    <p>A row of five numbers such as <code>0 · 0 · 1 · 14 · 212</code> is the
+      heart of the whole site. They count the other places in the genome that
+      look like your guide, grouped by how many letters differ.</p>
+    <p>The first number counts places that match perfectly. The second counts
+      places that differ by one letter, the third by two, and so on up to four.
+      So <code>0 · 0 · 1 · 14 · 212</code> means nothing matches exactly,
+      nothing is one letter off, one place is two letters off, fourteen are
+      three letters off, and two hundred and twelve are four letters off.</p>
+    <p>Fewer differences means more dangerous. A site that differs by one or two
+      letters is a real risk. Sites differing by four letters are mostly
+      coincidence in a genome this size, and nearly every guide has some.</p>
+    <p>These are complete counts from searching the whole genome on both
+      strands, not estimates or samples. Your own target is not included in them.</p>
+
+    <h2 id="m-inside">Opening a guide</h2>
+    <p>Clicking a row opens three panels.</p>
+    <h3>Left: the target and what to order</h3>
+    <p>The sequence is shown with its surroundings, the cut point marked, and the
+      exact position in the genome written underneath. Below that is the 20
+      letter spacer with a copy button. If you buy ready-made synthetic guide
+      RNA, that is all you need.</p>
+    <p>If you make your own, open <b>Other oligo formats</b>. The first option
+      gives you two DNA oligos that you anneal and transcribe with T7 to produce
+      the guide RNA yourself, which is the usual route for injecting Cas9
+      protein into embryos. The second oligo of that pair never changes, so you
+      order it once and reuse it for every gene. The second option gives you
+      oligos with sticky ends for cloning the guide into a plasmid such as
+      pX330, which only applies if you work with plasmids rather than injecting
+      protein.</p>
+    <h3>Middle: where else this guide could cut</h3>
+    <p>The first table repeats the five numbers, split by PAM type. The
+      <b>NGG</b> column is the one that matters, because that is the sequence
+      Cas9 needs in order to cut. <b>NAG</b> is a weaker version that Cas9 uses
+      only rarely, so those numbers are far less worrying.</p>
+    <p>The second table lists the individual sites that come closest, with the
+      most concerning first. <b>MM</b> is how many letters differ. <b>Seed</b> is
+      how many of those differences fall in the twelve letters nearest the PAM,
+      which is the stretch Cas9 is fussiest about. A difference in the seed
+      usually stops Cas9 cutting, so a high seed number is reassuring and a seed
+      of zero deserves a look. <b>Lands in</b> tells you whether that site falls
+      inside another gene's coding sequence, inside an intron, or in empty space
+      between genes. A site inside another gene's coding sequence is the one to
+      take seriously, and NeoGuide names the gene so you can judge whether
+      cutting it would ruin your experiment.</p>
+    <h3>Right: primers for checking the edit</h3>
+    <p>After injecting, you need to know whether anything actually changed.
+      These two primers amplify a short piece of DNA around the cut, which you
+      then sequence. The product is under 300 letters and the cut sits at least
+      50 letters from each end, so the change is comfortably inside the read.</p>
+    <p>The bar underneath shows the product with the cut marked. Below it is the
+      actual sequence that will be amplified, with the primers shaded, the guide
+      marked in its colour, the PAM in gold, and any intron in lighter type so
+      you can see whether the product crosses a splice junction. The line about
+      3' ends tells you how many times each primer's business end occurs in the
+      genome. One is what you want.</p>
+
+    <h2 id="m-seq">The sequence at the bottom</h2>
+    <p>This is the full coding sequence of the gene, split into its exons. Each
+      exon has its own heading giving its number, its position in the genome,
+      its length, and how many guides fall inside it.</p>
+    <p>Guides are highlighted in the sequence in their verdict colour, so you can
+      see at a glance where the clean ones cluster. When you open a guide, that
+      one is outlined in black and the page scrolls to it, so you can always see
+      exactly which letters you are about to cut.</p>
+
+    <h2 id="m-get">Filters and downloads</h2>
+    <p>Above the list, <b>Cleanest</b> hides anything but the best two
+      categories, and <b>All isoforms</b> keeps only guides that sit in sequence
+      shared by every annotated version of the gene, which matters when a gene
+      has several isoforms and you want to disable all of them.</p>
+    <p>Below the list, <b>Show more scanned guides</b> reveals another twenty
+      that were checked against the genome but scored lower. They carry no
+      primers. They are useful when you need to cut at one particular place
+      rather than simply anywhere in the gene.</p>
+    <p><b>Download CSV</b> gives you the ten guides for the gene you are looking
+      at, with every number, the oligos and the primers, ready for a
+      spreadsheet. If you want the whole species at once, the file
+      <code>data/guides_top.tsv</code> holds every published guide for every
+      gene as one plain table.</p>
+    <p>The moon button at the top right switches between light and dark.</p>
+
+    <h2 id="m-pick">How to pick a guide</h2>
+    <p>In most cases the first row is the right answer and you can stop there.
+      When you want to think about it, here is the order worth checking.</p>
+    <p>Start with the first two of the five numbers. If either is above zero,
+      something in the genome matches your guide exactly or nearly so, and you
+      should choose a different guide unless you have a reason not to. Next look
+      at whether any close site lands inside another gene's coding sequence, and
+      whether that gene would matter to your experiment. Then think about
+      position. Cutting in the first half of the coding sequence is more likely
+      to destroy the protein than cutting near the end, and the percentage
+      column tells you where you are. If the gene has several isoforms and you
+      want to disable all of them, use the <b>All isoforms</b> filter. Finally,
+      check there is a primer pair, because without one you cannot easily tell
+      whether the edit worked.</p>
+    <p>Many labs inject two guides against the same gene to cut out the piece
+      between them, which makes the change easy to see on a gel. If you plan
+      that, pick two clean guides from different parts of the list and check
+      that one primer pair spans both cut sites.</p>
+
+    <h2 id="m-cannot">What NeoGuide cannot tell you</h2>
+    <p>It cannot tell you how well a guide will cut. Everything here is about
+      whether a guide is <i>specific</i>, meaning it hits your gene and nothing
+      else. How efficiently a given guide works is a different question, and the
+      published tools that try to predict it were trained on human and mouse
+      cells and have never been tested in butterflies. Treat two clean guides as
+      equally promising and test them.</p>
+    <p>It also compares your guide against the reference genome, which is not
+      the exact genome of the animals in your cage. Natural variation between
+      individuals can create a mismatch that stops a guide working, or remove
+      one and create an off-target that is not listed here.</p>
+    <p>Guides are only placed inside coding sequence, so if you want to edit a
+      promoter, an enhancer, an untranslated region or a splice site, you will
+      not find what you need here.</p>
+    <p>Finally, the off-target search looks for letter substitutions only. It
+      does not look for sites that match after allowing an insertion or a
+      deletion, which are rarer but not impossible.</p>
+    <p>None of this is a reason to distrust the numbers. It is a reason to check
+      every oligo against your own sequence before ordering, and to confirm
+      edits by sequencing rather than by hope.</p>
+
+    <h2 id="m-words">Words you will see</h2>
+    <table>
+      <tr><td>Spacer</td><td>The 20 letters of your guide that match the gene.
+        This is what you order.</td></tr>
+      <tr><td>Protospacer</td><td>The matching 20 letters in the DNA itself.</td></tr>
+      <tr><td>PAM</td><td>Three letters sitting next to the target that Cas9 must
+        find before it will cut. For this Cas9 it is NGG, where N is any letter.
+        It is part of the DNA, not part of what you order.</td></tr>
+      <tr><td>Seed</td><td>The twelve letters of the spacer closest to the PAM.
+        Cas9 is least tolerant of differences here.</td></tr>
+      <tr><td>Mismatch</td><td>One letter that differs between your guide and
+        some place in the genome.</td></tr>
+      <tr><td>Off-target</td><td>Another place in the genome similar enough that
+        Cas9 might cut it too.</td></tr>
+      <tr><td>Cut site</td><td>Where Cas9 breaks the DNA, three letters in from
+        the PAM end of the target.</td></tr>
+      <tr><td>CDS</td><td>Coding sequence. The part of the gene that is actually
+        turned into protein.</td></tr>
+      <tr><td>Exon and intron</td><td>Exons are the pieces kept in the finished
+        message, introns the pieces cut out. Guides here sit wholly inside
+        coding exons.</td></tr>
+      <tr><td>Isoform</td><td>One of several versions of the same gene, built by
+        joining its exons in different combinations.</td></tr>
+      <tr><td>sgRNA</td><td>The finished guide RNA molecule, spacer plus the
+        fixed scaffold that Cas9 holds on to.</td></tr>
+      <tr><td>RNP</td><td>Cas9 protein with its guide RNA already loaded,
+        injected as a ready-made complex.</td></tr>
+      <tr><td>Amplicon</td><td>The piece of DNA your two primers copy, which you
+        sequence to check the edit.</td></tr>
+      <tr><td>Specificity</td><td>A single number summarising the off-target
+        counts. Higher is cleaner. It is a convenience, not a measurement, and
+        the <a href="#/methods">Methods</a> page gives the formula.</td></tr>
+    </table>
+
+    <p class="endnote">Still stuck, or something here is wrong or unclear? That is
+      worth fixing, so please say so.</p>
+  </article>`;
+  $("#main").addEventListener("click", (e) => {
+    const b = e.target.closest("button[data-goto]");
+    if (!b) return;
+    const t = document.getElementById(b.dataset.goto);
+    if (t) t.scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+}
+
 /* ---------------------------------------------------------------- methods */
 function renderMethods() {
   loadIndex().then(() => {
@@ -1165,6 +1444,7 @@ function route() {
   if (!parts.length) return renderHome();
   if (parts[0] === "gene" && parts[1]) return renderGene(parts[1], params);
   if (parts[0] === "search" && parts[1]) return renderResults(decodeURIComponent(parts[1]));
+  if (parts[0] === "manual") return renderManual();
   if (parts[0] === "methods") return renderMethods();
   renderHome();
 }

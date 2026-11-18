@@ -237,6 +237,25 @@ const rcs = (x) => x.split("").reverse().map((c) => RCM0[c] || "N").join("");
   segs[0].dispatchEvent(new window.Event("click", { bubbles: true }));
   await sleep(120);
 
+  // ---- manual -----------------------------------------------------------
+  window.location.hash = "#/manual";
+  window.dispatchEvent(new window.Event("hashchange"));
+  await sleep(300);
+  const man = $("#main");
+  t("manual page renders", /How to use NeoGuide/.test(man.textContent));
+  t("manual has all sections", man.querySelectorAll("h2").length >= 13,
+    `${man.querySelectorAll("h2").length} sections`);
+  t("manual contents links all resolve",
+    Array.from(man.querySelectorAll(".toc button"))
+      .every((b) => !!window.document.getElementById(b.dataset.goto)));
+  t("manual explains the five numbers", /0 · 0 · 1 · 14 · 212/.test(man.textContent));
+  t("manual has a glossary", /Protospacer/.test(man.textContent) &&
+    /Amplicon/.test(man.textContent));
+  t("manual states what it cannot do",
+    /cannot tell you how well a guide will cut/.test(man.textContent));
+  t("manual is linked from the nav", !!$('a[href="#/manual"]'));
+  t("no em dashes in the manual", !/—/.test(man.textContent));
+
   // ---- methods ----------------------------------------------------------
   window.location.hash = "#/methods";
   window.dispatchEvent(new window.Event("hashchange"));
@@ -255,7 +274,7 @@ const rcs = (x) => x.split("").reverse().map((c) => RCM0[c] || "N").join("");
   const frag = gene.seq.substr(30, 80);
   window.location.hash = `#/search/${frag}`;
   window.dispatchEvent(new window.Event("hashchange"));
-  await sleep(900);
+  await sleep(1800);
   const stxt = $("#main").textContent;
   t("sequence search finds the gene", stxt.includes(gene.sym) || stxt.includes(gene.id),
     stxt.slice(0, 90).replace(/\s+/g, " "));

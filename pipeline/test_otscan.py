@@ -85,7 +85,9 @@ for i in range(nq):
     got[i] = list(struct.unpack_from("<" + "I" * nslot, data, i * 4 * nslot))
 
 # --- independent brute force ----------------------------------------------
-exp = {i: [0] * (MAXMM + 1) for i in range(nq)}
+# counts are [NGG 0..MAXMM][NAG 0..MAXMM]
+expg = {i: [0] * (MAXMM + 1) for i in range(nq)}
+expa = {i: [0] * (MAXMM + 1) for i in range(nq)}
 for ci, nm in enumerate(names):
     s = "".join(chroms[nm])
     L = len(s)
@@ -93,25 +95,28 @@ for ci, nm in enumerate(names):
         # plus
         if s[i + 22] == "G" and s[i + 21] in "GA":
             t = s[i:i + 20]
+            pam = 0 if s[i + 21] == "G" else 1
             if "N" not in t:
                 for qi, (sp, qc, qp, qs) in enumerate(queries):
                     mm = sum(1 for a, b in zip(sp, t) if a != b)
                     if mm <= MAXMM:
-                        if mm == 0 and s[i + 21] == "G" and qs == 0 and qc == ci and qp == i + 1:
+                        if mm == 0 and pam == 0 and qs == 0 and qc == ci and qp == i + 1:
                             continue
-                        exp[qi][mm] += 1
+                        (expg if pam == 0 else expa)[qi][mm] += 1
         # minus: need rc(s[i+3:i+23]) as protospacer, PAM rc(s[i:i+3])
         if s[i] == "C" and s[i + 1] in "CT":
             blk = s[i + 3:i + 23]
+            pam = 0 if s[i + 1] == "C" else 1
             if "N" not in blk and len(blk) == 20:
                 t = rc(blk)
                 for qi, (sp, qc, qp, qs) in enumerate(queries):
                     mm = sum(1 for a, b in zip(sp, t) if a != b)
                     if mm <= MAXMM:
-                        if mm == 0 and s[i + 1] == "C" and qs == 1 and qc == ci and qp == i + 4:
+                        if mm == 0 and pam == 0 and qs == 1 and qc == ci and qp == i + 4:
                             continue
-                        exp[qi][mm] += 1
+                        (expg if pam == 0 else expa)[qi][mm] += 1
 
+exp = {i: expg[i] + expa[i] for i in range(nq)}
 bad = 0
 for i in range(nq):
     if got[i] != exp[i]:
