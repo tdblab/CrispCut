@@ -1,8 +1,10 @@
-# NeoGuide
+<p align="center"><img src="assets/logo.svg" alt="CrispCut" width="360"></p>
+
+# CrispCut
 
 Precomputed, off-target-verified SpCas9 guides for every protein-coding gene of
 a genome, each one paired with primers for amplicon sequencing. Built for
-non-model organisms, where no such resource exists. NeoGuide is the
+non-model organisms, where no such resource exists. CrispCut is the
 precomputed companion to [NEO-CRISPR](https://github.com/tdblab/NEO-CRISPR):
 that tool designs guides on demand for a genome you supply, this one ships the
 answers already computed and checked.
@@ -48,7 +50,7 @@ works from a folder, from a USB stick, and with no network at all.
 This works because every data file is a classic script rather than JSON fetched
 over the network (see *Data format* below). Browsers block `fetch()` over
 `file://`, which is what breaks most static data sites when opened from disk;
-loading a `<script>` from disk is still allowed, so NeoGuide sidesteps it.
+loading a `<script>` from disk is still allowed, so CrispCut sidesteps it.
 
 If you would rather serve it properly while developing, `start.bat` (Windows)
 or `./start.sh` (macOS, Linux) will serve this folder at
@@ -80,7 +82,7 @@ numbers, which keeps that index at 20 MB instead of about 30 MB.
 
 ## Hosting on GitHub Pages
 
-1. Create a repository (for example `tdblab/neoguide`) and push this folder
+1. Create a repository (for example `tdblab/crispcut`) and push this folder
    at the repository root.
 
    ```bash
@@ -88,14 +90,14 @@ numbers, which keeps that index at 20 MB instead of about 30 MB.
    git init -b main
    git add .
    git commit -m "Guide atlas: Bicyclus anynana"
-   git remote add origin https://github.com/tdblab/neoguide.git
+   git remote add origin https://github.com/tdblab/crispcut.git
    git push -u origin main
    ```
 
 2. In the repository, open **Settings → Pages**, set **Source** to
    *Deploy from a branch*, branch `main`, folder `/ (root)`, and save.
 
-3. The site appears at `https://tdblab.github.io/neoguide/` within a minute
+3. The site appears at `https://tdblab.github.io/crispcut/` within a minute
    or two.
 
 Nothing needs a build step, so no GitHub Action is required. Jekyll is bypassed

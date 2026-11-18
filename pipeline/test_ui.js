@@ -242,7 +242,7 @@ const rcs = (x) => x.split("").reverse().map((c) => RCM0[c] || "N").join("");
   window.dispatchEvent(new window.Event("hashchange"));
   await sleep(300);
   const man = $("#main");
-  t("manual page renders", /How to use NeoGuide/.test(man.textContent));
+  t("manual page renders", /How to use CrispCut/.test(man.textContent));
   t("manual has all sections", man.querySelectorAll("h2").length >= 13,
     `${man.querySelectorAll("h2").length} sections`);
   t("manual contents links all resolve",

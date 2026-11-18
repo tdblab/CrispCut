@@ -1,5 +1,5 @@
 @echo off
-rem NeoGuide - serve this folder and open it in your browser.
+rem CrispCut - serve this folder and open it in your browser.
 rem Browsers block data files when index.html is opened directly from disk,
 rem so a tiny local web server is needed. Nothing is uploaded anywhere.
 cd /d "%~dp0"

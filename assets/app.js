@@ -1,4 +1,4 @@
-/* NeoGuide client application.
+/* CrispCut client application.
    Static site: one search index + one JSON file per gene. */
 (() => {
 "use strict";
@@ -1063,7 +1063,7 @@ document.addEventListener("click", (e) => {
 /* ---------------------------------------------------------------- manual */
 function renderManual() {
   const sections = [
-    ["what", "What NeoGuide is"],
+    ["what", "What CrispCut is"],
     ["find", "Finding your gene"],
     ["page", "The gene page"],
     ["map", "The picture at the top"],
@@ -1074,12 +1074,12 @@ function renderManual() {
     ["seq", "The sequence at the bottom"],
     ["get", "Filters and downloads"],
     ["pick", "How to pick a guide"],
-    ["cannot", "What NeoGuide cannot tell you"],
+    ["cannot", "What CrispCut cannot tell you"],
     ["words", "Words you will see"],
   ];
   $("#main").innerHTML = `
   <article class="doc manual">
-    <h1>How to use NeoGuide</h1>
+    <h1>How to use CrispCut</h1>
     <p class="lede2">Everything on this site in plain language. If you have never
       designed a CRISPR experiment before, start at the top. If you just want to
       know what one number means, jump to it.</p>
@@ -1087,14 +1087,14 @@ function renderManual() {
     <nav class="toc">${sections.map((x) =>
       `<button type="button" data-goto="m-${x[0]}">${esc(x[1])}</button>`).join("")}</nav>
 
-    <h2 id="m-what">What NeoGuide is</h2>
+    <h2 id="m-what">What CrispCut is</h2>
     <p>To knock out a gene with CRISPR you need three things. A short piece of
       RNA, called a guide, that matches a 20 letter stretch of your gene and
       tells the Cas9 protein where to cut. Proof that those 20 letters do not
       also match somewhere else in the genome, because Cas9 would cut there too.
       And a pair of PCR primers so you can check afterwards whether the edit
       actually happened.</p>
-    <p>NeoGuide has done all three for every protein-coding gene in
+    <p>CrispCut has done all three for every protein-coding gene in
       <i>Bicyclus anynana</i>. You look up your gene and copy what you need.
       There is nothing to install and nothing to run.</p>
 
@@ -1109,7 +1109,7 @@ function renderManual() {
       example <code>LOC112048811</code>. Both the current and the older
       assembly numbering are recognised.</p>
     <p><b>A piece of sequence.</b> Paste at least 31 letters of coding sequence
-      and press Enter. NeoGuide works out which gene it came from and where in
+      and press Enter. CrispCut works out which gene it came from and where in
       that gene it sits, then highlights it for you. This is the one to use when
       you have a fragment from sequencing, or you want to cut inside one
       particular domain. It searches coding sequence only, so a piece of an
@@ -1209,7 +1209,7 @@ function renderManual() {
       of zero deserves a look. <b>Lands in</b> tells you whether that site falls
       inside another gene's coding sequence, inside an intron, or in empty space
       between genes. A site inside another gene's coding sequence is the one to
-      take seriously, and NeoGuide names the gene so you can judge whether
+      take seriously, and CrispCut names the gene so you can judge whether
       cutting it would ruin your experiment.</p>
     <h3>Right: primers for checking the edit</h3>
     <p>After injecting, you need to know whether anything actually changed.
@@ -1267,7 +1267,7 @@ function renderManual() {
       that, pick two clean guides from different parts of the list and check
       that one primer pair spans both cut sites.</p>
 
-    <h2 id="m-cannot">What NeoGuide cannot tell you</h2>
+    <h2 id="m-cannot">What CrispCut cannot tell you</h2>
     <p>It cannot tell you how well a guide will cut. Everything here is about
       whether a guide is <i>specific</i>, meaning it hits your gene and nothing
       else. How efficiently a given guide works is a different question, and the
